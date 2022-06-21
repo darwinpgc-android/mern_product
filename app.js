@@ -1,0 +1,47 @@
+require("dotenv").config(); // importing 'dotEnv' file
+
+
+const mongoose = require("mongoose");
+const express = require("express");
+const bodyParser = require("body-parser");
+const cookieParser = require("cookie-parser");
+const cors = require("cors");
+
+const authRoutes = require("./routes/auth");
+const orderRoutes = require("./routes/order");
+const userRoutes = require("./routes/user")
+
+const app = express();
+
+// DB connection ..............
+mongoose
+  .connect(process.env.DB_CONNECTION, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    useCreateIndex: true,
+  })
+  .then(() => {
+    console.log(`DB connected successfully `);
+  })
+  .catch(() => {
+    console.log("Check your connection");
+  });
+
+// middleware .............
+
+app.use(bodyParser.json());
+app.use(cookieParser());
+app.use(cors());
+
+//Routes
+
+app.use("/api", authRoutes);
+app.use("/order", orderRoutes);
+app.use("/user", userRoutes)
+
+// Port
+const port = process.env.PORT || 8000;
+
+app.listen(port, () => {
+  console.log(`server is running at : ${port}`);
+});
