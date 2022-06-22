@@ -33,15 +33,6 @@ exports.signup = (req, res) => {
 exports.signin = (req, res) => {
   const { email, password } = req.body;
 
-  // const authentication = (salt, password, hash) => {
-  //   let value = crypto
-  //     .createHmac("sha256", salt)
-  //     .update(password)
-  //     .digest("hex");
-
-  //    return value ===  hash
-  // };
-
   const errors = validationResult(req);
 
   if (!errors.isEmpty()) {
@@ -56,12 +47,6 @@ exports.signin = (req, res) => {
         error: "User email does not exist ",
       });
     }
-
-    // if (!authentication(user.salt, password, user.encry_password)) {
-    //   return res.status(401).json({
-    //     error: "Email and password do not match",
-    //   });
-    // }
 
     if (!user.authenticate(password)) {
       return res.status(401).json({
@@ -88,7 +73,7 @@ exports.signin = (req, res) => {
 exports.signout = (req, res) => {
   res.cookie("token");
   res.json({
-    message: "user signout successfully",  
+    message: "user signout successfully",
   });
 };
 
@@ -96,29 +81,30 @@ exports.signout = (req, res) => {
 
 exports.isSignedIn = expressJwt({
   secret: process.env.SECRET,
-
-  userProperty: "auth"
-})
-
+  userProperty: "auth",
+}
+);
 
 // custome middlewares
 
-
-exports.isAuthenticated = (req, res, next) =>{
-  let checker = req.profile && req.auth && req.profile._id === req.auth._id
-  if(!checker){
+exports.isAuthenticated = (req, res, next) => {
+  
+  let checker = req.profile && req.auth && req.profile._id == req.auth._id;
+  if (!checker) {
     return res.status(403).json({
-      error: "Access denied"
-    })
+      error: "Access denied",
+    });
   }
-  next()
-}
+  next();
+};
 
-exports.isAdmin = (req, res, next) =>{
-  if(req.profile.role === 0){
+exports.isAdmin = (req, res, next) => {
+  if (req.profile.role === 0) {
     res.status(403).json({
-      error: "you are not admin, Access denied"
-    })
+      error: "you are not admin, Access denied",
+    });
   }
-  next()
-}
+  next();
+};
+
+
