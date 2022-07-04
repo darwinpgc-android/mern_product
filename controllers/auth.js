@@ -4,7 +4,6 @@ const expressJwt = require("express-jwt");
 const crypto = require("crypto");
 
 const User = require("../models/user");
-const { json } = require("body-parser");
 
 exports.signup = (req, res) => {
   const errors = validationResult(req);
@@ -32,8 +31,10 @@ exports.signup = (req, res) => {
 
 exports.signin = (req, res) => {
   const { email, password } = req.body;
+  console.log(email, password);
 
   const errors = validationResult(req);
+
 
   if (!errors.isEmpty()) {
     return res.status(422).json({
@@ -48,10 +49,10 @@ exports.signin = (req, res) => {
       });
     }
 
-    if (!user.authenticate(password)) {
+    if (!user.authenticate(password)) { // as "user" is returned instance of UserSchema , function 'authenticate' will be made available to this instance as well
       return res.status(401).json({
         error: "Email and password do not match",
-      });
+      }); 
     }
 
     const token = jwt.sign({ _id: user._id }, process.env.SECRET);
@@ -61,8 +62,8 @@ exports.signin = (req, res) => {
     res.cookie("token", token, { expire: new Date() + 9999 });
 
     // sending response to front end
-
     const { _id, name, email, role } = user;
+
     return res.status(200).json({
       token,
       user: { _id, name, email, role },
@@ -71,7 +72,13 @@ exports.signin = (req, res) => {
 };
 
 exports.signout = (req, res) => {
-  res.cookie("token");
+  
+  if(!res.cookie()){
+    res.status(200).json({
+      message: 'first log in '
+    })
+  }
+  res.clearCookie("token")
   res.json({
     message: "user signout successfully",
   });
@@ -81,30 +88,28 @@ exports.signout = (req, res) => {
 
 exports.isSignedIn = expressJwt({
   secret: process.env.SECRET,
-  userProperty: "auth",
-}
-);
+  userProperty: "authenticate",
+});
 
 // custome middlewares
 
 exports.isAuthenticated = (req, res, next) => {
-  
-  let checker = req.profile && req.auth && req.profile._id == req.auth._id;
+  console.log(req.authenticate)
+  let checker = req.profile && req.authenticate && req.profile._id == req.authenticate._id;
   if (!checker) {
     return res.status(403).json({
-      error: "Access denied",
+      error: "you are not authenticated",
     });
   }
   next();
 };
 
+
 exports.isAdmin = (req, res, next) => {
   if (req.profile.role === 0) {
-    res.status(403).json({
+    return res.status(403).json({
       error: "you are not admin, Access denied",
     });
   }
   next();
 };
-
-

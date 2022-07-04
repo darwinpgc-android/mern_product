@@ -34,11 +34,17 @@ const productSchema = new mongoose.Schema(
       default: 0,
     },
     photo: {
-      type: Buffer,
+      data: Buffer,
       contentType: String,
     },
   },
   { timestamps: true }
 );
 
-module.export = mongoose.model("Product", productSchema);
+productSchema.methods = {
+  fromSchema: function (){
+    console.log(this)
+  }
+}
+
+module.exports = mongoose.model("product", productSchema);

@@ -85,8 +85,9 @@ userSchema.methods = {
   authenticate: function (plainPassword) {
     return this.securePassword(plainPassword) === this.encry_password;
   },
+
 };
 
 //---------- methods function logic end ----------------------
 
-module.exports = mongoose.model("User", userSchema);
+module.exports = mongoose.model("user", userSchema);

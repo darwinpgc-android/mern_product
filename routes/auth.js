@@ -6,16 +6,20 @@ const router = express.Router();
 const { signup, signin, signout, isSignedIn} = require("../controllers/auth");
 
 router.post(
-  "/signup",
+  "/auth/signup",
   [
     check("email", "Enter correct email").isEmail(),
     check("password", "Minimum 8 character").isLength({ min: 8 }),
   ],
   signup
 )
-
+"/auth/signup",
+  [
+    check("email", "Enter correct email").isEmail(),
+    check("password", "Minimum 8 character").isLength({ min: 8 }),
+  ]
 router.post(
-  "/signin",
+  "/auth/signin",
   [
     check("email", "email is incorrect").isEmail(),
     check("password", "email is incorrect").isLength({ min: 8 }),
