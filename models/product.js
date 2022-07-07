@@ -29,7 +29,7 @@ const productSchema = new mongoose.Schema(
     stock: {
       type: Number,
     },
-    sole: {
+    sold: {
       type: Number,
       default: 0,
     },
@@ -40,11 +40,5 @@ const productSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
-
-productSchema.methods = {
-  fromSchema: function (){
-    console.log(this)
-  }
-}
 
 module.exports = mongoose.model("product", productSchema);

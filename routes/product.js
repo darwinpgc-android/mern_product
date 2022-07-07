@@ -5,6 +5,7 @@ const router = express();
 const {
   getProductById,
   getProduct,
+  getAllProducts,
   createProduct,
   delProduct,
   updateProduct
@@ -42,6 +43,7 @@ router.delete(
   isAdmin,
   delProduct
 );
+
 // update product
 
 router.put(
@@ -51,6 +53,10 @@ router.put(
   isAdmin,
   updateProduct
 );
+
+// listing product 
+
+router.get('/products', getAllProducts);
 
 module.exports = router;
   

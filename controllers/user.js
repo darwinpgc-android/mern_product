@@ -81,7 +81,6 @@ exports.pushOrderInPurchaseList = (req, res, next) => {
   // store this in database
 
   User.findOneAndUpdate(
-    { _id: req.profile._id },
     { $push: { purchases: purchases } },
     { new: true }, // new is used to get the updated object
     (err, purchases) => {
@@ -90,6 +89,7 @@ exports.pushOrderInPurchaseList = (req, res, next) => {
           error: "unable to save purchase list",
         });
       }
+    console.log();
       next();
     }
   );
