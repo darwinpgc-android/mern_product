@@ -11,8 +11,7 @@ const productCartSchema = new mongoose.Schema({
   price: Number,
 });
 
-
-const productCart = mongoose.model("ProductCart", productCartSchema)
+const ProductCart = mongoose.model("p roductCart", productCartSchema);
 
 const orderSchema = new mongoose.Schema(
   {
@@ -22,6 +21,11 @@ const orderSchema = new mongoose.Schema(
       type: Number,
     },
     address: String,
+    status: {
+      type: String,
+      default: "Recieved",
+      enum: ["Cancelled", "Delivered", "Shipped", "Processing", "Recieved"],
+    },
     updated: Date,
     user: {
       type: ObjectId,
@@ -31,7 +35,6 @@ const orderSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+const Order = mongoose.model("order", orderSchema);
 
-const order = mongoose.model("Order", orderSchema)
-
-module.exports = {order , productCart}
+module.exports = { Order, ProductCart };

@@ -11,6 +11,7 @@ const authRoutes = require("./routes/auth");
 const userRoutes = require("./routes/user");
 const categoryRoutes = require('./routes/category')
 const productRoutes = require('./routes/product')
+const orderRoutes = require('./routes/order')
 
 const app = express();
 
@@ -40,11 +41,13 @@ app.use("/api", authRoutes);
 app.use("/api", userRoutes)
 app.use("/api", categoryRoutes)
 app.use("/api", productRoutes)
+app.use("/api", orderRoutes)
 
 
 app.get("/home", (req, res) => {
+  var limit = req.query.limit
   res.json({
-    message: 'Home page'
+    message: `query returned : ${limit}`
   })
 })
 

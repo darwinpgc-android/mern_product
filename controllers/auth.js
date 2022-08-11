@@ -41,6 +41,7 @@ exports.signin = (req, res) => {
       err: errors.array(),
     });
   }
+  console.log('...................................')
 
   User.findOne({ email }, (err, user) => {
     if (err) {
@@ -88,7 +89,7 @@ exports.signout = (req, res) => {
 
 exports.isSignedIn = expressJwt({
   secret: process.env.SECRET,
-  userProperty: "authenticate",
+  userProperty: "authenticate", 
 });
 
 // custome middlewares

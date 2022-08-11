@@ -8,7 +8,8 @@ const {
   getAllProducts,
   createProduct,
   delProduct,
-  updateProduct
+  updateProduct,
+  getAllUniqueCategories
 } = require("../controllers/product");
 const { isSignedIn, isAuthenticated, isAdmin } = require("../controllers/auth");
 const { getUserById } = require("../controllers/user");
@@ -27,7 +28,7 @@ router.get("/product/photo/:productId");
 // post router for product
 
 router.post(
-  "/product/:userId",
+  "/product/create/:userId",
   isSignedIn,
   isAuthenticated,
   isAdmin,
@@ -57,6 +58,10 @@ router.put(
 // listing product 
 
 router.get('/products', getAllProducts);
+
+router.get('/products/uniqueCategories', getAllUniqueCategories);
+
+
 
 module.exports = router;
   
