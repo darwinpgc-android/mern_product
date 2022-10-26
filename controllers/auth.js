@@ -1,15 +1,14 @@
 const { validationResult } = require("express-validator");
 const jwt = require("jsonwebtoken");
 const expressJwt = require("express-jwt");
-const crypto = require("crypto");
-
 const User = require("../models/user");
 
 exports.signup = (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(422).json({
-      err: errors.array(),
+      field: errors.array()[0].param,
+      msg: errors.array()[0].msg
     });
   }
 
@@ -17,9 +16,8 @@ exports.signup = (req, res) => {
 
   user.save((err, user) => {
     if (err) {
-      console.log(err);
       return res.status(400).send({
-        err: "not able to save user in DB",
+        err: err.message
       });
     }
     res.json({
@@ -38,7 +36,8 @@ exports.signin = (req, res) => {
 
   if (!errors.isEmpty()) {
     return res.status(422).json({
-      err: errors.array(),
+      field: errors.array()[0].param,
+      msg: errors.array()[0].msg
     });
   }
   console.log('...................................')
@@ -53,7 +52,7 @@ exports.signin = (req, res) => {
     if (!user.authenticate(password)) { // as "user" is returned instance of UserSchema , function 'authenticate' will be made available to this instance as well
       return res.status(401).json({
         error: "Email and password do not match",
-      }); 
+      });
     }
 
     const token = jwt.sign({ _id: user._id }, process.env.SECRET);
@@ -73,8 +72,8 @@ exports.signin = (req, res) => {
 };
 
 exports.signout = (req, res) => {
-  
-  if(!res.cookie()){
+
+  if (!res.cookie()) {
     res.status(200).json({
       message: 'first log in '
     })
@@ -84,19 +83,19 @@ exports.signout = (req, res) => {
     message: "user signout successfully",
   });
 };
-            
+
 // protected routes
 
 exports.isSignedIn = expressJwt({
   secret: process.env.SECRET,
-  userProperty: "authenticate", 
+  userProperty: "jwtPayload",
 });
 
 // custome middlewares
 
 exports.isAuthenticated = (req, res, next) => {
-  console.log(req.authenticate)
-  let checker = req.profile && req.authenticate && req.profile._id == req.authenticate._id;
+
+  let checker = req.profile && req.jwtPayload && req.profile._id == req.jwtPayload._id;
   if (!checker) {
     return res.status(403).json({
       error: "you are not authenticated",

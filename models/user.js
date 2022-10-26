@@ -13,7 +13,7 @@ const userSchema = new Schema(
       maxlength: 32,
       trim: true,
     },
-    lastname:       {
+    lastname: {
       type: String,
       maxlength: 32,
       trim: true,
@@ -51,42 +51,68 @@ const userSchema = new Schema(
 
 //---------- virtual function logic start ----------------------
 
-userSchema
-  .virtual("password")
-  .set(function (password) {
-    this._password = password;
+// userSchema
+//   .virtual("password")
+//   .set(function (password) {
+//     this._password = password;
+//     this.salt = uuid();
+//     console.log(this.salt);
+//     this.encry_password = this.securePassword(password);
+//   })
+//   .get(function () {
+//     return this._password;
+//   });
+
+
+userSchema.virtual("password")
+  .set(function (password){
     this.salt = uuid();
-    console.log(this.salt);
     this.encry_password = this.securePassword(password);
   })
-  .get(function () {
-    return this._password;
-  });
+
 
 //---------- virtual function logic end ----------------------
 
 //---------- methods function logic start ----------------------
 
+// userSchema.methods = {
+//   securePassword: function (plainPassword) {
+//     if (!plainPassword) return "";
+//     console.log(this.salt);
+//     try {
+//       return crypto
+//         .createHmac("sha256", this.salt)
+//         .update(plainPassword)
+//         .digest("hex");
+//     } catch (err) {
+//       console.log(`${err}...........`);
+//       return "";
+//     }
+//   },
+
+//   authenticate: function (plainPassword) {
+//     return this.securePassword(plainPassword) === this.encry_password;
+//   },
+
+// };
+
 userSchema.methods = {
   securePassword: function (plainPassword) {
     if (!plainPassword) return "";
-    console.log(this.salt);
     try {
-      return crypto
-        .createHmac("sha256", this.salt)
-        .update(plainPassword)
-        .digest("hex");
+      return crypto.createHmac("sha256", this.salt).update(plainPassword).digest("hex")
     } catch (err) {
-      console.log(`${err}...........`);
-      return "";
+      console.log(err);
+      return ""
     }
   },
 
-  authenticate: function (plainPassword) {
-    return this.securePassword(plainPassword) === this.encry_password;
-  },
+  authenticate : function (plainPassword){
+    return this.securePassword(plainPassword) === this.encry_password
+  }
 
-};
+  
+}
 
 //---------- methods function logic end ----------------------
 

@@ -37,7 +37,7 @@ router.get(
 
 // status of order
 
-roter.get("/order/status/:userId", isSignedIn, isAuthenticated, getOrderStatus);
+router.get("/order/status/:userId", isSignedIn, isAuthenticated, getOrderStatus);
 
 router.put(
   "/order/:orderId/status/:userId",

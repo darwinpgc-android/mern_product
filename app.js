@@ -44,14 +44,6 @@ app.use("/api", productRoutes)
 app.use("/api", orderRoutes)
 
 
-app.get("/home", (req, res) => {
-  var limit = req.query.limit
-  res.json({
-    message: `query returned : ${limit}`
-  })
-})
-
-
 // Port
 const port = process.env.PORT || 8000;
 
